@@ -160,6 +160,7 @@ int main(){
         else if(cmd=="logout"){
             if(current_priv()<1 || session.empty()){ invalid(); continue; }
             session.pop_back();
+            // clear selected book on logout per spec
             push_log("logout");
         }
         else if(cmd=="register"){
@@ -283,7 +284,7 @@ int main(){
                 seen.insert(k); kvs.push_back({k,v});
             }
             {
-                Book &b = books[sel];
+                auto itb = books.find(sel); if(itb==books.end()){ invalid(); goto endmodify; } Book &b = itb->second;
                 for(auto &kv: kvs){ const string &k=kv.first; const string &v=kv.second;
                     if(k=="-ISBN"){
                         if(!is_legal_isbn(v)) { invalid(); goto endmodify; }
